@@ -1,9 +1,20 @@
 export interface Task {
   id?: number;
   order?: number;
-  priority: number;
+  priority: Priority | null;
   title: string;
-  comment?: string;
+  comment?: string | null;
   isDone?: boolean;
-  deadline?: Date;
+  deadline?: Date | null;
+}
+
+export enum Priority {
+  HEIGH = 1,
+  MEDIUM = 2,
+  LOW = 3,
+}
+
+export interface PriorityOpion {
+  value: Priority;
+  text: string;
 }

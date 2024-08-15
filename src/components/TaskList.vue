@@ -1,6 +1,7 @@
 <template>
   <div class="task-list mx-auto">
-    <div>إضافة</div>
+    <edit-task />
+    <v-divider />
     <ul>
       <li v-for="task of tasks" :key="task.id">
         {{ task.title }}
@@ -12,9 +13,11 @@
 <script lang="ts">
 import type { Task } from "@/types";
 import { defineComponent } from "vue";
+import EditTask from "./EditTask.vue";
 
 export default defineComponent({
-  name: 'TaskList',
+  name: "TaskList",
+  components: { EditTask },
   data() {
     return {
       tasks: [

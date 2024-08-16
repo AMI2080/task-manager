@@ -19,17 +19,61 @@
     <v-list-item-title
       :class="{ 'line-through': task.status === TaskStatus.DONE }"
     >
-      <v-icon
-        :color="
+      <v-tooltip
+        :text="
           task.priority === TaskPriority.HEIGH
-            ? 'error'
+            ? 'مرتفع الأولوية'
             : task.priority === TaskPriority.MEDIUM
-            ? 'warning'
-            : 'success'
+            ? 'متوسط الأولوية'
+            : 'منخفض الأولوية'
         "
-        icon="mdi-circle-medium"
-      />
+      >
+        <template v-slot:activator="{ props }">
+          <v-icon
+            :color="
+              task.priority === TaskPriority.HEIGH
+                ? 'error'
+                : task.priority === TaskPriority.MEDIUM
+                ? 'warning'
+                : 'success'
+            "
+            icon="mdi-circle"
+            class="me-1"
+            v-bind="props"
+          />
+        </template>
+      </v-tooltip>
       {{ task.title }}
+      <v-chip
+        :color="
+          task.status === TaskStatus.DONE
+            ? 'success'
+            : task.status === TaskStatus.IN_PROGRESS
+            ? 'warning'
+            : 'default'
+        "
+        size="small"
+        variant="flat"
+        class="me-1"
+      >
+        <v-icon
+          :icon="
+            task.status === TaskStatus.DONE
+              ? 'mdi-calendar-check-outline'
+              : task.status === TaskStatus.IN_PROGRESS
+              ? 'mdi-progress-clock'
+              : 'mdi-bullseye-arrow'
+          "
+          start
+        />
+        {{
+          task.status === TaskStatus.DONE
+            ? "مكتملة"
+            : task.status === TaskStatus.IN_PROGRESS
+            ? "قيد التنفيذ"
+            : "يجب تنفيذها"
+        }}
+      </v-chip>
     </v-list-item-title>
     <v-list-item-subtitle class="ps-6">
       {{ task.comment }}
@@ -143,7 +187,7 @@ export default defineComponent({
   background-color: #cfd8dc;
 
   &.in-progress {
-    background-color: #FFF9C4;
+    background-color: #fff9c4;
   }
 
   &.done {

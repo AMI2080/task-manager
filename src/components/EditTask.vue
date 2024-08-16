@@ -146,7 +146,7 @@
                       <v-select
                         :items="priorities"
                         v-model="newTask.priority"
-                        label="الأهمية"
+                        label="الأولوية"
                         item-title="text"
                         item-value="value"
                         :rules="rules.priority"
@@ -262,7 +262,7 @@ export default defineComponent({
           (v: string) => v.length <= 20 || "طول النص يجب أن لا يزيد عن 20 أحرف",
         ],
         status: [(v) => !!v || "الحالة مطلوبة"],
-        priority: [(v) => !!v || "الأهمية مطلوبة"],
+        priority: [(v) => !!v || "الأولوية مطلوبة"],
         deadline: [
           (v) => !!v || "الحد الأقصى مطلوب",
           (v: any) => {

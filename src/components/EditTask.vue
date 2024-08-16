@@ -2,7 +2,7 @@
   <v-form ref="form" @submit.prevent="addTask()">
     <v-card
       prepend-icon="mdi-calendar-plus"
-      :title="!!task ? 'إضافة مهمة جديدة' : 'تعديل مهمة'"
+      :title="!task ? 'إضافة مهمة جديدة' : 'تعديل مهمة'"
       variant="tonal"
       color="primary"
     >
@@ -66,7 +66,6 @@
               type="submit"
               text="إضافة"
               variant="flat"
-              @click="addTask()"
               height="56"
               block
             />

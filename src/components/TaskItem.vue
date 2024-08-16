@@ -174,7 +174,7 @@ export default defineComponent({
       });
     },
     deleteItem(): void {
-      console.log("delete", this.task);
+      this.store.dispatch("deleteTask", this.task.id);
     },
   },
 });

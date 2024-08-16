@@ -45,6 +45,15 @@ export default createStore<State>({
         }
       });
     },
+    deleteTask(state: State, taskId: number) {
+      let index: number;
+      state.tasks.forEach((x, i) => {
+        if (x.id === taskId) {
+          index = i;
+        }
+      });
+      state.tasks.splice(index, 1);
+    },
   },
   actions: {
     createTask(context, task: Task) {
@@ -55,6 +64,9 @@ export default createStore<State>({
     },
     updateTask(context, task: Task) {
       context.commit("updateTask", task);
+    },
+    deleteTask(context, task: Task) {
+      context.commit("deleteTask", task);
     },
   },
 });

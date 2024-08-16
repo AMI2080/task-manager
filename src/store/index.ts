@@ -50,6 +50,7 @@ export default createStore<State>({
         }
         return x;
       });
+			updateStorage(state.tasks);
     },
     updateTask(state: State, task: Task): void {
       task = { ...task };
@@ -60,6 +61,7 @@ export default createStore<State>({
           return x;
         }
       });
+			updateStorage(state.tasks);
     },
     deleteTask(state: State, taskId: number): void {
       let index: number;
@@ -69,6 +71,7 @@ export default createStore<State>({
         }
       });
       state.tasks.splice(index, 1);
+			updateStorage(state.tasks);
     },
   },
   actions: {

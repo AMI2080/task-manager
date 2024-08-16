@@ -1,10 +1,10 @@
 <template>
-  <v-form ref="form" @submit.prevent="addTask()">
+  <v-form ref="form" :disabled="isLoading" @submit.prevent="addTask()">
     <v-card
       prepend-icon="mdi-calendar-plus"
       :title="!task ? 'إضافة مهمة جديدة' : 'تعديل مهمة'"
       variant="tonal"
-      color="primary"
+      :color="!task ? 'primary' : 'success'"
     >
       <v-card-text>
         <v-row>
@@ -15,7 +15,7 @@
               :rules="rules.title"
             />
           </v-col>
-          <v-col cols="6" md="3">
+          <v-col cols="6" md="4">
             <v-select
               :items="priorities"
               v-model="newTask.priority"
@@ -60,19 +60,24 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="6" md="3">
+          <v-col cols="6" md="2">
             <v-btn
-              color="primary"
+              :color="!task ? 'primary' : 'success'"
               type="submit"
-              text="إضافة"
+              :text="!task ? 'إضافة' : 'تحديث'"
               variant="flat"
               height="56"
               block
             />
           </v-col>
           <v-col cols="12">
-            <v-expansion-panels v-model="isAdvanced" variant="accordion">
-              <v-expansion-panel :value="true">
+            <v-expansion-panels
+              :color="`${!task ? 'blue' : 'green'}-lighten-3`"
+              :bg-color="`${!task ? 'blue' : 'green'}-lighten-5`"
+              v-model="isAdvanced"
+              variant="accordion"
+            >
+              <v-expansion-panel variant="tonal" :value="true">
                 <v-expansion-panel-title>بيانات إضافية</v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <v-row>
@@ -112,7 +117,7 @@
                           </v-card-text>
                           <v-card-actions class="pa-7 pt-0">
                             <v-btn
-                              color="primary"
+                              :color="!task ? 'primary' : 'success'"
                               variant="tonal"
                               @click.stop.prevent="
                                 newTask.deadline = new Date();
@@ -208,21 +213,24 @@ export default defineComponent({
       } as FromValidationRules,
       dateMenu: false as boolean,
       displayedDate: null as string | null,
+      isLoading: false as boolean,
     };
   },
   methods: {
     addTask(): void {
-      if (!(this.$refs.form as VForm).validate()) {
-        return;
-      }
-      if (!!this.task) {
-        console.log("Edit task", { ...this.newTask });
-      } else {
-        console.log("Create task", { ...this.newTask });
-      }
+      this.isLoading = true;
+      (this.$refs.form as VForm).validate().then((response) => {
+        if (response.valid) {
+          if (!!this.task) {
+            console.log("Edit task", { ...this.newTask });
+          } else {
+            console.log("Create task", { ...this.newTask });
+          }
+        }
+        this.isLoading = false;
+      });
     },
     parseDate(date: Date | null | undefined): string | null {
-      console.log("date", date, this.newTask.deadline);
       if (!date) {
         return null;
       }
@@ -240,25 +248,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  margin-inline: auto;
-  margin-top: -48px;
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: min(calc(100% - 24px), 800px);
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 8px;
-  border: 2px solid #008c9e;
-  overflow-y: auto;
-
-  .v-btn {
-    text-transform: unset;
-  }
-}
-</style>
+<style lang="scss"></style>

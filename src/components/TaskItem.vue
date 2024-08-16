@@ -143,9 +143,14 @@
 import { defineComponent, type PropType } from "vue";
 import { TaskPriority, TaskStatus, type Task } from "@/types";
 import EditTask from "./EditTask.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "TaskItem",
+  setup() {
+    const store = useStore();
+    return { store };
+  },
   components: { EditTask },
   props: {
     task: {
@@ -163,12 +168,10 @@ export default defineComponent({
   },
   methods: {
     setIsDone(): void {
-      if (!this.task.status) {
-        this.task.status = TaskStatus.TODO;
-        console.log("set as todo");
-      } else {
-        console.log("set as done");
-      }
+      this.store.dispatch("updateTaskStatus", {
+        task: this.task,
+        status: this.task.status ? TaskStatus.DONE : TaskStatus.TODO,
+      });
     },
     deleteItem(): void {
       console.log("delete", this.task);

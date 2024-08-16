@@ -1,4 +1,4 @@
-import { type Task } from "@/types";
+import { TaskPriority, TaskStatus, type Task } from "@/types";
 import { createStore } from "vuex";
 
 export interface State {
@@ -23,6 +23,18 @@ export default createStore<State>({
           : Math.max(...state.tasks.map((x) => x.id)) + 1;
       state.tasks.unshift(task);
     },
+    updateTaskStatus(
+      state: State,
+      payload: { task: Task; status: TaskStatus }
+    ) {
+      const task = { ...payload.task };
+      state.tasks = state.tasks.map((x) => {
+        if (x.id === task.id) {
+          x.status = payload.status;
+        }
+        return x;
+      });
+    },
     updateTask(state: State, task: Task) {
       task = { ...task };
       state.tasks = state.tasks.map((x) => {
@@ -37,6 +49,9 @@ export default createStore<State>({
   actions: {
     createTask(context, task: Task) {
       context.commit("createTask", task);
+    },
+    updateTaskStatus(context, payload: { task: Task; status: TaskStatus }) {
+      context.commit("updateTaskStatus", payload);
     },
     updateTask(context, task: Task) {
       context.commit("updateTask", task);

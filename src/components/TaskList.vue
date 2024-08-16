@@ -1,13 +1,15 @@
 <template>
-  <div class="task-list mx-auto">
-    <edit-task />
-    <v-divider />
-    <div v-if="tasks.length === 0" class="text-center">
-      <emoji-broken-heart width="128" height="128" />
-      <h2>لا يوجد مهام</h2>
-      <p>أنشئ أول مهمة و ضاعف إنتاجيتك.</p>
+  <div class="container">
+    <div class="task-list mx-auto">
+      <edit-task />
+      <v-divider />
+      <div v-if="tasks.length === 0" class="text-center">
+        <emoji-broken-heart width="128" height="128" />
+        <h2>لا يوجد مهام</h2>
+        <p>أنشئ أول مهمة و ضاعف إنتاجيتك.</p>
+      </div>
+      <task-item v-for="task of tasks" :task="task" :key="task.id" />
     </div>
-    <task-item v-for="task of tasks" :task="task" :key="task.id" />
   </div>
 </template>
 
@@ -56,7 +58,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.task-list {
+.container {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -72,8 +74,62 @@ export default defineComponent({
   border: 2px solid #008c9e;
   overflow-y: auto;
 
-  .v-btn {
-    text-transform: unset;
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    padding: 10px;
+    padding-inline-end: 5px;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #b3e5fc33;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        transparent 10px,
+        #b3e5fc 10px,
+        #b3e5fc calc(100% - 10px),
+        transparent calc(100% - 10px),
+        transparent
+      );
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #b3e5fc55;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        transparent 10px,
+        #4fc3f7 10px,
+        #4fc3f7 calc(100% - 10px),
+        transparent calc(100% - 10px),
+        transparent
+      );
+
+      &:hover {
+        background: #b3e5fc;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          transparent 10px,
+          #039be5 10px,
+          #039be5 calc(100% - 10px),
+          transparent calc(100% - 10px),
+          transparent
+        );
+      }
+    }
+
+    .v-btn {
+      text-transform: unset;
+    }
   }
 }
 </style>

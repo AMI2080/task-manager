@@ -103,7 +103,7 @@
     >
       <v-card>
         <v-card-text>
-          <edit-task :task="task" />
+          <edit-task :task="task" @submitted="showEditDialog = false" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -162,9 +162,6 @@ export default defineComponent({
     };
   },
   methods: {
-    editItem(): void {
-      console.log("edit", this.task);
-    },
     setIsDone(): void {
       if (!this.task.status) {
         this.task.status = TaskStatus.TODO;

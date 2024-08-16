@@ -38,10 +38,39 @@
           variant="text"
           size="small"
           color="error"
-          @click.stop.prevent="deleteItem"
+          @click.stop.prevent="showDeleteDialog = true"
         />
       </v-list-item-action>
     </template>
+    <v-dialog
+      v-model="showDeleteDialog"
+      transition="dialog-top-transition"
+      width="auto"
+    >
+      <v-card>
+        <v-card-title>
+          <v-icon color="error" icon="mdi-information-outline" />
+          تحذير
+        </v-card-title>
+        <v-card-text>
+          سيتم حذف المهمة و لن تستطيع إسترجاعها لاحقاً.
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn
+            text="تراجع"
+            variant="outlined"
+            color="primary"
+            @click="showDeleteDialog = false"
+          />
+          <v-btn
+            text="تأكيد الحذف"
+            variant="tonal"
+            color="error"
+            @click="deleteItem()"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-list-item>
 </template>
 
@@ -60,6 +89,7 @@ export default defineComponent({
   data() {
     return {
       Priority,
+      showDeleteDialog: false as boolean,
     };
   },
   methods: {

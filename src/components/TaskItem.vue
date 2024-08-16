@@ -1,0 +1,95 @@
+<template>
+  <v-list-item color="cyan" class="task-item" :class="{ done: task.isDone }">
+    <template v-slot:prepend>
+      <v-list-item-action start>
+        <v-checkbox-btn
+          v-model="task.isDone"
+          :color="task.isDone ? 'success' : 'default'"
+        />
+      </v-list-item-action>
+    </template>
+    <v-list-item-title :class="{ 'line-through': task.isDone }">
+      <v-icon
+        :color="
+          task.priority === Priority.HEIGH
+            ? 'error'
+            : task.priority === Priority.MEDIUM
+            ? 'warning'
+            : 'success'
+        "
+        icon="mdi-circle-medium"
+      />
+      {{ task.title }}
+    </v-list-item-title>
+    <v-list-item-subtitle class="ps-6">
+      {{ task.comment }}
+    </v-list-item-subtitle>
+    <template v-slot:append>
+      <v-list-item-action start>
+        <v-btn
+          icon="mdi-lead-pencil"
+          variant="text"
+          size="small"
+          class="me-3"
+          @click.stop.prevent="editItem"
+        />
+        <v-btn
+          icon="mdi-trash-can-outline"
+          variant="text"
+          size="small"
+          color="error"
+          @click.stop.prevent="deleteItem"
+        />
+      </v-list-item-action>
+    </template>
+  </v-list-item>
+</template>
+
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+import { Priority, type Task } from "@/types";
+
+export default defineComponent({
+  name: "TaskItem",
+  props: {
+    task: {
+      type: Object as PropType<Task>,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      Priority,
+    };
+  },
+  methods: {
+    editItem(): void {
+      console.log("edit", this.task);
+    },
+    deleteItem(): void {
+      console.log("delete", this.task);
+    },
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+.task-item {
+  padding: 8px;
+  border-radius: 8px !important;
+  background-color: #cfd8dc;
+
+  &.done {
+    background-color: #c8e6c9;
+  }
+
+  .v-list-item-title {
+    font-weight: 700;
+
+    &.line-through {
+      opacity: 0.4;
+      text-decoration: line-through;
+    }
+  }
+}
+</style>

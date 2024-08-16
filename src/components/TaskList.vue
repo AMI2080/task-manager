@@ -2,22 +2,25 @@
   <div class="task-list mx-auto">
     <edit-task />
     <v-divider />
-    <ul>
-      <li v-for="task of tasks" :key="task.id">
-        {{ task.title }}
-      </li>
-    </ul>
+    <div v-if="tasks.length === 0" class="text-center">
+      <emoji-broken-heart width="128" height="128" />
+      <h2>لا يوجد مهام</h2>
+      <p>أنشئ أول مهمة و ضاعف إنتاجيتك.</p>
+    </div>
+    <task-item v-for="task of tasks" :task="task" :key="task.id" />
   </div>
 </template>
 
 <script lang="ts">
 import type { Task } from "@/types";
 import { defineComponent } from "vue";
+import TaskItem from "./TaskItem.vue";
 import EditTask from "./EditTask.vue";
+import EmojiBrokenHeart from "@/assets/icons/EmojiBrokenHeart.vue";
 
 export default defineComponent({
   name: "TaskList",
-  components: { EditTask },
+  components: { TaskItem, EditTask, EmojiBrokenHeart },
   data() {
     return {
       tasks: [

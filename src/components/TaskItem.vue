@@ -31,7 +31,7 @@
           variant="text"
           size="small"
           class="me-3"
-          @click.stop.prevent="editItem"
+          @click.stop.prevent="showEditDialog = true"
         />
         <v-btn
           icon="mdi-trash-can-outline"
@@ -42,6 +42,17 @@
         />
       </v-list-item-action>
     </template>
+    <v-dialog
+      v-model="showEditDialog"
+      transition="dialog-top-transition"
+      width="700"
+    >
+      <v-card>
+        <v-card-text>
+          <edit-task :task="task" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog
       v-model="showDeleteDialog"
       transition="dialog-top-transition"
@@ -77,9 +88,11 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { Priority, type Task } from "@/types";
+import EditTask from "./EditTask.vue";
 
 export default defineComponent({
   name: "TaskItem",
+  components: { EditTask },
   props: {
     task: {
       type: Object as PropType<Task>,
@@ -89,6 +102,7 @@ export default defineComponent({
   data() {
     return {
       Priority,
+      showEditDialog: false as boolean,
       showDeleteDialog: false as boolean,
     };
   },

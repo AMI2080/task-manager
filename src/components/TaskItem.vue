@@ -1,20 +1,29 @@
 <template>
-  <v-list-item color="cyan" class="task-item" :class="{ done: task.isDone }">
+  <v-list-item
+    class="task-item"
+    :class="{
+      done: task.status === TaskStatus.DONE,
+      'in-progress': task.status === TaskStatus.IN_PROGRESS,
+    }"
+  >
     <template v-slot:prepend>
       <v-list-item-action start>
         <v-checkbox-btn
-          v-model="task.isDone"
-          :color="task.isDone ? 'success' : 'default'"
-          @change="setIsDone($event)"
+          :color="task.status === TaskStatus.TODO ? 'default' : 'success'"
+          v-model="task.status"
+          :value="TaskStatus.DONE"
+          @change="setIsDone()"
         />
       </v-list-item-action>
     </template>
-    <v-list-item-title :class="{ 'line-through': task.isDone }">
+    <v-list-item-title
+      :class="{ 'line-through': task.status === TaskStatus.DONE }"
+    >
       <v-icon
         :color="
-          task.priority === Priority.HEIGH
+          task.priority === TaskPriority.HEIGH
             ? 'error'
-            : task.priority === Priority.MEDIUM
+            : task.priority === TaskPriority.MEDIUM
             ? 'warning'
             : 'success'
         "
@@ -88,7 +97,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
-import { Priority, type Task } from "@/types";
+import { TaskPriority, TaskStatus, type Task } from "@/types";
 import EditTask from "./EditTask.vue";
 
 export default defineComponent({
@@ -102,7 +111,8 @@ export default defineComponent({
   },
   data() {
     return {
-      Priority,
+      TaskPriority,
+      TaskStatus,
       showEditDialog: false as boolean,
       showDeleteDialog: false as boolean,
     };
@@ -111,9 +121,13 @@ export default defineComponent({
     editItem(): void {
       console.log("edit", this.task);
     },
-    setIsDone(event: InputEvent): void {
-      const isDone = (event.target as HTMLInputElement)?.checked;
-      console.log('set is done', isDone);
+    setIsDone(): void {
+      if (!this.task.status) {
+        this.task.status = TaskStatus.TODO;
+        console.log("set as todo");
+      } else {
+        console.log("set as done");
+      }
     },
     deleteItem(): void {
       console.log("delete", this.task);
@@ -127,6 +141,10 @@ export default defineComponent({
   padding: 8px;
   border-radius: 8px !important;
   background-color: #cfd8dc;
+
+  &.in-progress {
+    background-color: #FFF9C4;
+  }
 
   &.done {
     background-color: #c8e6c9;

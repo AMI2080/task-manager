@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import type { Task } from "@/types";
+import { TaskStatus, type Task } from "@/types";
 import { defineComponent } from "vue";
 import TaskItem from "./TaskItem.vue";
 import EditTask from "./EditTask.vue";
@@ -30,8 +30,8 @@ export default defineComponent({
           priority: 1,
           title: "تأكيد حجز الجلسة",
           comment: "جلسة العلاج الطبيعي",
-          isDone: true,
           deadline: new Date(),
+          status: TaskStatus.DONE,
         },
         {
           id: 6,
@@ -39,6 +39,7 @@ export default defineComponent({
           priority: 2,
           title: "الإتصال بالمحاسب",
           deadline: new Date(),
+          status: TaskStatus.TODO,
         },
         {
           id: 5,
@@ -46,6 +47,7 @@ export default defineComponent({
           priority: 3,
           title: "تسليم نماذج",
           deadline: new Date(),
+          status: TaskStatus.IN_PROGRESS,
         },
       ] as Task[],
     };

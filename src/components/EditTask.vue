@@ -17,25 +17,30 @@
           </v-col>
           <v-col cols="6" md="4">
             <v-select
-              :items="priorities"
-              v-model="newTask.priority"
-              label="الأهمية"
+              :items="statuses"
+              v-model="newTask.status"
+              label="الحالة"
               item-title="text"
               item-value="value"
-              :rules="rules.priority"
-              closable-chips
+              :rules="rules.status"
             >
-              <template v-slot:item="{ props, item }">
+              <template v-slot:item="{ props }">
                 <v-list-item v-bind="props">
                   <template v-slot:prepend>
                     <v-icon
-                      icon="mdi-circle"
+                      :icon="
+                        props.value === TaskStatus.DONE
+                          ? 'mdi-calendar-check-outline'
+                          : props.value === TaskStatus.IN_PROGRESS
+                          ? 'mdi-progress-clock'
+                          : 'mdi-bullseye-arrow'
+                      "
                       :color="
-                        item.raw.value === Priority.HEIGH
-                          ? 'error'
-                          : item.raw.value === Priority.MEDIUM
+                        props.value === TaskStatus.DONE
+                          ? 'success'
+                          : props.value === TaskStatus.IN_PROGRESS
                           ? 'warning'
-                          : 'success'
+                          : 'default'
                       "
                     />
                   </template>
@@ -45,13 +50,19 @@
                 <v-chip v-bind="props" :text="item.raw.text">
                   <template v-slot:prepend>
                     <v-icon
-                      icon="mdi-circle"
+                      :icon="
+                        item.raw.value === TaskStatus.DONE
+                          ? 'mdi-calendar-check-outline'
+                          : item.raw.value === TaskStatus.IN_PROGRESS
+                          ? 'mdi-progress-clock'
+                          : 'mdi-bullseye-arrow'
+                      "
                       :color="
-                        item.raw.value === Priority.HEIGH
-                          ? 'error'
-                          : item.raw.value === Priority.MEDIUM
+                        item.raw.value === TaskStatus.DONE
+                          ? 'success'
+                          : item.raw.value === TaskStatus.IN_PROGRESS
                           ? 'warning'
-                          : 'success'
+                          : 'default'
                       "
                       class="me-1"
                     />
@@ -81,7 +92,7 @@
                 <v-expansion-panel-title>بيانات إضافية</v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" md="6">
                       <v-menu
                         v-model="dateMenu"
                         :close-on-content-click="false"
@@ -108,6 +119,7 @@
                             <v-date-picker
                               title="اختار أقصى موعد لتنفيذ المهمة"
                               v-model="newTask.deadline"
+                              header="ادخل التاريخ"
                               full-width
                               @update:model-value="
                                 displayedDate = parseDate(newTask.deadline);
@@ -129,6 +141,51 @@
                           </v-card-actions>
                         </v-card>
                       </v-menu>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-select
+                        :items="priorities"
+                        v-model="newTask.priority"
+                        label="الأهمية"
+                        item-title="text"
+                        item-value="value"
+                        :rules="rules.priority"
+                        closable-chips
+                      >
+                        <template v-slot:item="{ props, item }">
+                          <v-list-item v-bind="props">
+                            <template v-slot:prepend>
+                              <v-icon
+                                icon="mdi-circle"
+                                :color="
+                                  item.raw.value === TaskPriority.HEIGH
+                                    ? 'error'
+                                    : item.raw.value === TaskPriority.MEDIUM
+                                    ? 'warning'
+                                    : 'success'
+                                "
+                              />
+                            </template>
+                          </v-list-item>
+                        </template>
+                        <template v-slot:chip="{ props, item }">
+                          <v-chip v-bind="props" :text="item.raw.text">
+                            <template v-slot:prepend>
+                              <v-icon
+                                icon="mdi-circle"
+                                :color="
+                                  item.raw.value === TaskPriority.HEIGH
+                                    ? 'error'
+                                    : item.raw.value === TaskPriority.MEDIUM
+                                    ? 'warning'
+                                    : 'success'
+                                "
+                                class="me-1"
+                              />
+                            </template>
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-col>
                     <v-col cols="12">
                       <v-textarea
@@ -156,10 +213,12 @@
 
 <script lang="ts">
 import {
-  Priority,
+  TaskPriority,
+  TaskStatus,
   type FromValidationRules,
-  type PriorityOpion,
+  type TaskPriorityOpion,
   type Task,
+  type TaskStatusOpion,
 } from "@/types";
 import { defineComponent, type PropType } from "vue";
 import type { VForm } from "vuetify/components";
@@ -175,19 +234,26 @@ export default defineComponent({
   data() {
     return {
       showAddDialog: false as boolean,
-      Priority,
+      TaskPriority,
+      TaskStatus,
       newTask: {
         id: this.task?.id,
         title: this.task?.title,
         priority: this.task?.priority,
         deadline: this.task?.deadline,
         comment: this.task?.comment,
+        status: this.task?.status || TaskStatus.TODO,
       } as Task,
+      statuses: [
+        { value: TaskStatus.TODO, text: "يجب تنفيذها" },
+        { value: TaskStatus.IN_PROGRESS, text: "قيد التنفيذ" },
+        { value: TaskStatus.DONE, text: "مكتملة" },
+      ] as TaskStatusOpion[],
       priorities: [
-        { value: Priority.HEIGH, text: "مرتفع" },
-        { value: Priority.MEDIUM, text: "متوسط" },
-        { value: Priority.LOW, text: "منخفض" },
-      ] as PriorityOpion[],
+        { value: TaskPriority.HEIGH, text: "مرتفع" },
+        { value: TaskPriority.MEDIUM, text: "متوسط" },
+        { value: TaskPriority.LOW, text: "منخفض" },
+      ] as TaskPriorityOpion[],
       isAdvanced: false as boolean,
       rules: {
         title: [
@@ -195,6 +261,7 @@ export default defineComponent({
           (v: string) => v.length >= 3 || "طول النص يجب أن لا يقل عن 3 أحرف",
           (v: string) => v.length <= 20 || "طول النص يجب أن لا يزيد عن 20 أحرف",
         ],
+        status: [(v) => !!v || "الحالة مطلوبة"],
         priority: [(v) => !!v || "الأهمية مطلوبة"],
         deadline: [
           (v) => !!v || "الحد الأقصى مطلوب",

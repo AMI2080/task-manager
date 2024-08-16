@@ -3,12 +3,12 @@
     <div class="task-list mx-auto">
       <edit-task />
       <v-divider />
-      <div v-if="tasks.length === 0" class="text-center">
+      <div v-if="store.getters.tasksList.length === 0" class="text-center">
         <emoji-broken-heart width="128" height="128" />
         <h2>لا يوجد مهام</h2>
         <p>أنشئ أول مهمة و ضاعف إنتاجيتك.</p>
       </div>
-      <task-item v-for="task of tasks" :task="task" :key="task.id" />
+      <task-item v-for="task of store.getters.tasksList" :task="task" :key="task.id" />
     </div>
   </div>
 </template>
@@ -19,10 +19,15 @@ import { defineComponent } from "vue";
 import TaskItem from "./TaskItem.vue";
 import EditTask from "./EditTask.vue";
 import EmojiBrokenHeart from "@/assets/icons/EmojiBrokenHeart.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "TaskList",
   components: { TaskItem, EditTask, EmojiBrokenHeart },
+  setup() {
+    const store = useStore();
+    return { store };
+  },
   data() {
     return {
       tasks: [

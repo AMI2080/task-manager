@@ -222,9 +222,14 @@ import {
 } from "@/types";
 import { defineComponent, type PropType } from "vue";
 import type { VForm } from "vuetify/components";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "EditTask",
+  setup() {
+    const store = useStore();
+    return { store };
+  },
   props: {
     task: {
       type: Object as PropType<Task | null>,
@@ -242,7 +247,7 @@ export default defineComponent({
         priority: this.task?.priority,
         deadline: this.task?.deadline,
         comment: this.task?.comment,
-        status: this.task?.status || TaskStatus.TODO,
+        status: this.task?.status,
       } as Task,
       statuses: [
         { value: TaskStatus.TODO, text: "يجب تنفيذها" },
@@ -289,10 +294,13 @@ export default defineComponent({
       (this.$refs.form as VForm).validate().then((response) => {
         if (response.valid) {
           if (!!this.task) {
-            console.log("Edit task", { ...this.newTask });
+            this.store.dispatch("updateTask", this.newTask);
           } else {
-            console.log("Create task", { ...this.newTask });
+            this.store.dispatch("createTask", this.newTask);
           }
+          this.isAdvanced = false;
+          this.$emit("submitted");
+          (this.$refs.form as VForm).reset();
         }
         this.isLoading = false;
       });
@@ -311,6 +319,14 @@ export default defineComponent({
 
       return `${mm}/${dd}/${yyyy}`;
     },
+  },
+  mounted() {
+    this.isAdvanced =
+      !!this.newTask.id &&
+      (!!this.newTask.deadline ||
+        !!this.newTask.priority ||
+        !!this.newTask.comment);
+    this.displayedDate = this.parseDate(this.newTask.deadline);
   },
 });
 </script>

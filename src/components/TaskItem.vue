@@ -103,7 +103,7 @@
     >
       <v-card>
         <v-card-text>
-          <edit-task :task="task" />
+          <edit-task :task="task" @submitted="showEditDialog = false" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -143,9 +143,14 @@
 import { defineComponent, type PropType } from "vue";
 import { TaskPriority, TaskStatus, type Task } from "@/types";
 import EditTask from "./EditTask.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "TaskItem",
+  setup() {
+    const store = useStore();
+    return { store };
+  },
   components: { EditTask },
   props: {
     task: {
@@ -162,19 +167,14 @@ export default defineComponent({
     };
   },
   methods: {
-    editItem(): void {
-      console.log("edit", this.task);
-    },
     setIsDone(): void {
-      if (!this.task.status) {
-        this.task.status = TaskStatus.TODO;
-        console.log("set as todo");
-      } else {
-        console.log("set as done");
-      }
+      this.store.dispatch("updateTaskStatus", {
+        task: this.task,
+        status: this.task.status ? TaskStatus.DONE : TaskStatus.TODO,
+      });
     },
     deleteItem(): void {
-      console.log("delete", this.task);
+      this.store.dispatch("deleteTask", this.task.id);
     },
   },
 });

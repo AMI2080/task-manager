@@ -5,6 +5,7 @@
         <v-checkbox-btn
           v-model="task.isDone"
           :color="task.isDone ? 'success' : 'default'"
+          @change="setIsDone($event)"
         />
       </v-list-item-action>
     </template>
@@ -109,6 +110,10 @@ export default defineComponent({
   methods: {
     editItem(): void {
       console.log("edit", this.task);
+    },
+    setIsDone(event: InputEvent): void {
+      const isDone = (event.target as HTMLInputElement)?.checked;
+      console.log('set is done', isDone);
     },
     deleteItem(): void {
       console.log("delete", this.task);

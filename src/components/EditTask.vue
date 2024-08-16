@@ -322,10 +322,10 @@ export default defineComponent({
   },
   mounted() {
     this.isAdvanced =
-      !!this.newTask.id ||
-      !!this.newTask.deadline ||
-      !!this.newTask.priority ||
-      !!this.newTask.comment;
+      !!this.newTask.id &&
+      (!!this.newTask.deadline ||
+        !!this.newTask.priority ||
+        !!this.newTask.comment);
     this.displayedDate = this.parseDate(this.newTask.deadline);
   },
 });
